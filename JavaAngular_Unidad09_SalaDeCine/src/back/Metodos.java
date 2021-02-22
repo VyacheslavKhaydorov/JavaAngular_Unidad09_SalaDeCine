@@ -90,8 +90,8 @@ public class Metodos {
 					  sentado = false;
 					  do {
 						  //Generamos dos valores aleatorios
-						  fila = aleatorizador.nextInt(5);
-						  columna = aleatorizador.nextInt(9);	//Asignamos los valores usados en la creacion del objeto cine
+						  fila = aleatorizador.nextInt(cine.sala.length);
+						  columna = aleatorizador.nextInt(cine.sala[0].length);	//Asignamos los valores usados en la creacion del objeto cine
 						  if (cine.sala[cine.sala.length - (fila + 1)][columna].isLibre() == true) {	//El bucle para asignar las filas es inverso
 							  cine.sala[cine.sala.length - (fila + 1)][columna].setLibre(false);
 							  sentado = true;
