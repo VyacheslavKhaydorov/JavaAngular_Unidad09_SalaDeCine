@@ -74,38 +74,49 @@ public class Metodos {
 	  public static void sentarEspectadores(Cine cine, Pelicula pelicula) {
 		  
 		  //Variables
-		  boolean sentado = false;
+		  boolean sentado = false, salaLlena = false;
 		  Random aleatorizador = new Random();	//Para generar num aleatorios
 		  int fila, columna;
+		  int asientosLibres = cine.sala.length * cine.sala[0].length;
 		  
 		  //Conseguimos los espectadores
 		  Espectador[] nuestrosEspectadores = Metodos.generarEspectadores();
 		  
 		  //Recorremos el vector de espectadores
 		  for (Espectador espect : nuestrosEspectadores) {
-			  //Por cada espectador del vector...
-			  if (espect.tieneEdad(pelicula.getEdadMin()) && espect.tieneDinero(cine.getPrecioEntrada())) {	//Comprobamos edad superior a edad mínima y dinero suficiente
-				  sentado = false;
-				  do {
-					  //Generamos dos valores aleatorios
-					  fila = aleatorizador.nextInt(5);
-					  columna = aleatorizador.nextInt(9);	//Asignamos los valores usados en la creacion del objeto cine
-					  if (cine.sala[cine.sala.length - (fila + 1)][columna].isLibre() == true) {	//El bucle para asignar las filas es inverso
-						  cine.sala[cine.sala.length - (fila + 1)][columna].setLibre(false);
-						  sentado = true;
-					  }
-				  } while (!sentado);
-				  //Salida por pantalla
-				  System.out.println("\n" + espect.getNombre() + " se sienta en el asiento " + (fila + 1) + (char)('A' + columna));	//fila es la ubicacion en el vector
-				  																												//y la columna va en letras
+			  if (!salaLlena) {		//Comprobamos que la sala no esté llena
+				  //Por cada espectador del vector...
+				  if (espect.tieneEdad(pelicula.getEdadMin()) && espect.tieneDinero(cine.getPrecioEntrada())) {	//Comprobamos edad superior a edad mínima y dinero suficiente
+					  sentado = false;
+					  do {
+						  //Generamos dos valores aleatorios
+						  fila = aleatorizador.nextInt(5);
+						  columna = aleatorizador.nextInt(9);	//Asignamos los valores usados en la creacion del objeto cine
+						  if (cine.sala[cine.sala.length - (fila + 1)][columna].isLibre() == true) {	//El bucle para asignar las filas es inverso
+							  cine.sala[cine.sala.length - (fila + 1)][columna].setLibre(false);
+							  sentado = true;
+							  asientosLibres -= 1;
+						  }
+					  } while (!sentado);
+					  //Salida por pantalla
+					  System.out.println("\n" + espect.getNombre() + " se sienta en el asiento " + (fila + 1) + (char)('A' + columna));	//fila es la ubicacion en el vector
+					  																												//y la columna va en letras
+				  }
+				  else if (!espect.tieneEdad(pelicula.getEdadMin()))
+					  System.out.println("\n" + espect.getNombre() + ", de " + espect.getEdad() + " años, no puede entrar a ver esta "
+					  		+ "pelicula porque no llega a la edad mínima de la pelicula (" + pelicula.getEdadMin() + ").");
+				  else
+					  System.out.println("\n" + espect.getNombre() + " no puede entrar a ver esta pelicula porque no puede pagar la "
+					  		+ "entrada.\nPrecio entrada: " + cine.getPrecioEntrada() + "\nDinero del espectador: " + espect.getDinero());
 			  }
-			  else if (!espect.tieneEdad(pelicula.getEdadMin()))
-				  System.out.println("\n" + espect.getNombre() + ", de " + espect.getEdad() + " años, no puede entrar a ver esta "
-				  		+ "pelicula porque no llega a la edad mínima de la pelicula (" + pelicula.getEdadMin() + ").");
-			  else
-				  System.out.println("\n" + espect.getNombre() + " no puede entrar a ver esta pelicula porque no puede pagar la "
-				  		+ "entrada.\nPrecio entrada: " + cine.getPrecioEntrada() + "\nDinero del espectador: " + espect.getDinero());
+			  if (asientosLibres == 0) {					//Si no quedan asienos libres ponemos salaLlena a true
+				  salaLlena = true;
+				  System.out.println("La sala está llena!");
+			  }
 		  }
+		  
+		  //Mostramos cuantos asientos libres quedan en la sala
+		  System.out.println("\nQuedan " + asientosLibres + " asientos libres en la sala\n");
 		  
 	  }
 
